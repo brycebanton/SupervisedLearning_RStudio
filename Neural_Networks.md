@@ -1,7 +1,7 @@
 Neural Networks
 ================
 
-## GitHub Documents
+## General Overview
 
 This is the tuning of Neural Networks using the nnet package in R. This
 process is to tune the parameters to best find what will produce the
@@ -12,6 +12,40 @@ lowest misclassification rate in the SATimage data set.
 ``` r
 library(nnet) 
 ```
+
+## Investigating Data set
+
+``` r
+SATimage = read.csv("C:/Users/vn6415dw/Desktop/RStudio/DSCI 425/Data/SATimage.csv",header = T, sep = ",")
+SATimage = data.frame(class=as.factor(SATimage$class),SATimage[,1:36])
+head(SATimage)
+```
+
+    ##   class TL1 TL2 TL3 TL4 TC1 TC2 TC3 TC4 TR1 TR2 TR3 TR4 CL1 CL2 CL3 CL4 CC1 CC2
+    ## 1     3  92 115 120  94  84 102 106  79  84 102 102  83 101 126 133 103  92 112
+    ## 2     3  84 102 106  79  84 102 102  83  80 102 102  79  92 112 118  85  84 103
+    ## 3     3  84 102 102  83  80 102 102  79  84  94 102  79  84 103 104  81  84  99
+    ## 4     3  80 102 102  79  84  94 102  79  80  94  98  76  84  99 104  78  84  99
+    ## 5     3  84  94 102  79  80  94  98  76  80 102 102  79  84  99 104  81  76  99
+    ## 6     3  80  94  98  76  80 102 102  79  76 102 102  79  76  99 104  81  76  99
+    ##   CC3 CC4 CR1 CR2 CR3 CR4 BL1 BL2 BL3 BL4 BC1 BC2 BC3 BC4 BR1 BR2 BR3 BR4
+    ## 1 118  85  84 103 104  81 102 126 134 104  88 121 128 100  84 107 113  87
+    ## 2 104  81  84  99 104  78  88 121 128 100  84 107 113  87  84  99 104  79
+    ## 3 104  78  84  99 104  81  84 107 113  87  84  99 104  79  84  99 104  79
+    ## 4 104  81  76  99 104  81  84  99 104  79  84  99 104  79  84 103 104  79
+    ## 5 104  81  76  99 108  85  84  99 104  79  84 103 104  79  79 107 109  87
+    ## 6 108  85  76 103 118  88  84 103 104  79  79 107 109  87  79 107 109  87
+
+``` r
+class(SATimage$class)
+```
+
+    ## [1] "factor"
+
+The goal is to try and classify the ‘Class’ (which is a factor) column
+in this data set using Neural Networks. To get the best model we will
+run misclassification functions and tune the parameters in the Neural
+Nets to acheive the lowest misclassifcation.
 
 ### This is a function for Regular Neural Networks
 
@@ -53,9 +87,6 @@ Several Models have been done with different parameters to see which one
 provides the best Missclassification
 
 ``` r
-SATimage = read.csv("C:/Users/vn6415dw/Desktop/RStudio/DSCI 425/Data/SATimage.csv",header = T, sep = ",")
-SATimage = data.frame(class=as.factor(SATimage$class),SATimage[,1:36])
-
 set.seed(888) 
 testcases = sample(1:dim(SATimage)[1],1000,replace=F)
 SATtest = SATimage[testcases,]
@@ -177,9 +208,6 @@ misclass.nnet(sat.nn,SATtrain$class)
     ## Misclassification Rate =  0.112
 
 ``` r
-#yhat = predict(sat.nn,newdata=SATtest,type="class")
-#misclass(yhat,SATtest$class)
-
 sat.nn2 = nnet(class~.,data=SATtrain,size=15,decay=.05,maxit=10000)
 ```
 
@@ -376,14 +404,6 @@ misclass.nnet(sat.nn2,SATtrain$class)
     ## Misclassification Rate =  0.094
 
 ``` r
-#yhat = predict(sat.nn2,newdata=SATtest,type="class")
-#misclass(yhat,SATtest$class)
-
-#sat.nn3 = nnet(class~.,data=SATtrain,size=15,decay=.001,maxit=10000)
-#misclass.nnet(sat.nn3,SATtrain$class)
-#yhat = predict(sat.nn3,newdata=SATtest,type="class")
-#misclass(yhat,SATtest$class)
-
 sat.nn4 = nnet(class~.,data=SATtrain,size=12,decay=.025,maxit=10000)
 ```
 
@@ -625,14 +645,6 @@ misclass.nnet(sat.nn4,SATtrain$class)
     ## Misclassification Rate =  0.0547
 
 ``` r
-#yhat = predict(sat.nn4,newdata=SATtest,type="class")
-#misclass(yhat,SATtest$class)
-
-#sat.nn5 = nnet(class~.,data=SATtrain,size=18,decay=.025,maxit=10000)
-#misclass.nnet(sat.nn5,SATtrain$class)
-#yhat = predict(sat.nn5,newdata=SATtest,type="class")
-#misclass(yhat,SATtest$class)
-
 sat.nn6 = nnet(class~.,data=SATtrain,size=12,decay=.02,maxit=10000)
 ```
 
@@ -837,26 +849,7 @@ misclass.nnet(sat.nn6,SATtrain$class)
     ## 
     ## Misclassification Rate =  0.0862
 
-``` r
-#yhat = predict(sat.nn6,newdata=SATtest,type="class")
-#misclass(yhat,SATtest$class)
+## Conclusion
 
-#sat.nn7 = nnet(class~.,data=SATtrain,size=14,decay=.01,maxit=50000)
-#misclass.nnet(sat.nn7,SATtrain$class)
-#yhat = predict(sat.nn7,newdata=SATtest,type="class")
-#misclass(yhat,SATtest$class)
-
-#sat.nn8 = nnet(class~.,data=SATtrain,size=9,decay=.025,maxit=50000)
-#misclass.nnet(sat.nn8,SATtrain$class)
-#yhat = predict(sat.nn8,newdata=SATtest,type="class")
-#misclass(yhat,SATtest$class)
-```
-
-## Plots
-
-\#You can also embed plots, for example:
-
-\#`{r pressure, echo=FALSE} #plot(pressure) #`
-
-Note that the `echo = FALSE` parameter was added to the code chunk to
-prevent printing of the R code that generated the plot.
+The third Neural Network had the lowest misclassifcation rate and
+predicted the best for SATimages at .0547 or 5.47%
